@@ -26,9 +26,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import be.mbolle.wordytony.ui.HomeScreen
 import be.mbolle.wordytony.ui.Offset
 import be.mbolle.wordytony.ui.WordyTonyButton
+import be.mbolle.wordytony.ui.navigation.MainScreen
+import be.mbolle.wordytony.ui.navigation.PlayScreen
 import be.mbolle.wordytony.ui.theme.WordyTonyTheme
 
 class MainActivity : ComponentActivity() {
@@ -47,23 +52,50 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun App() {
     WordyTonyTheme {
-        Scaffold(modifier =
-        Modifier
-            .fillMaxSize()
-            .safeDrawingPadding()
-            .padding(horizontal = 25.dp),
-            topBar = {
-                WordyTonyTopAppBar(
-                    title = stringResource(R.string.title),
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-        ) { innerPadding ->
-            HomeScreen(
-                modifier = Modifier
+        val navController = rememberNavController()
+
+
+
+        NavHost(navController = navController, startDestination = MainScreen) {
+            composable<MainScreen> {
+                Scaffold(modifier =
+                Modifier
                     .fillMaxSize()
-                    .padding(innerPadding)
-            )
+                    .safeDrawingPadding()
+                    .padding(horizontal = 25.dp),
+                    topBar = {
+                        WordyTonyTopAppBar(
+                            title = stringResource(R.string.title),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                ) { innerPadding ->
+                    HomeScreen(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding),
+                        playClick = { navController.navigate(PlayScreen) },
+                        awardsClick = {}
+                    )
+                }
+            }
+
+            composable<PlayScreen> {
+                Scaffold(modifier =
+                Modifier
+                    .fillMaxSize()
+                    .safeDrawingPadding()
+                    .padding(horizontal = 25.dp),
+                    topBar = {
+                        WordyTonyTopAppBar(
+                            title = "WORD FINDER",
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                ) { innerPadding ->
+                    Text("To be implemented...", modifier = Modifier.padding(innerPadding))
+                }
+            }
         }
     }
 }

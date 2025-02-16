@@ -1,6 +1,5 @@
 package be.mbolle.wordytony.ui
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,18 +26,16 @@ import be.mbolle.wordytony.R
 import be.mbolle.wordytony.ui.theme.WordyTonyTheme
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun HomeScreen(modifier: Modifier = Modifier, playClick: () -> Unit, awardsClick: () -> Unit) {
     val defaultActionButtonOffset = Offset(x = 5.dp, y = 5.dp)
 
     Column(verticalArrangement = Arrangement.Bottom, modifier = modifier) {
         WordyTonyButton(modifier = Modifier.fillMaxWidth(), offset = defaultActionButtonOffset,
-            onClick = {
-                Log.d("HomeScreen", "this is the play button....")
-            }) {
+            onClick = playClick) {
             Text(stringResource(R.string.play_btn))
         }
         WordyTonyButton(modifier = Modifier.fillMaxWidth(), offset = defaultActionButtonOffset,
-            onClick = {}) {
+            onClick = awardsClick) {
             Text(stringResource(R.string.awards_btn))
         }
     }
