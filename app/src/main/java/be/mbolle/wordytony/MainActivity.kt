@@ -26,11 +26,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import be.mbolle.wordytony.ui.HomeScreen
 import be.mbolle.wordytony.ui.Offset
+import be.mbolle.wordytony.ui.WordFinderScreen
 import be.mbolle.wordytony.ui.WordyTonyButton
 import be.mbolle.wordytony.ui.navigation.MainScreen
 import be.mbolle.wordytony.ui.navigation.PlayScreen
@@ -51,57 +53,60 @@ class MainActivity : ComponentActivity() {
 @Preview
 @Composable
 fun App() {
+    val navController = rememberNavController()
     WordyTonyTheme {
-        val navController = rememberNavController()
+        NavigationHandler(navController)
+    }
+}
 
+@Composable
+fun NavigationHandler(navController: NavHostController) {
+    val scaffoldModifier = Modifier
+        .fillMaxSize()
+        .safeDrawingPadding()
+        .padding(horizontal = 25.dp)
 
-
-        NavHost(navController = navController, startDestination = MainScreen) {
-            composable<MainScreen> {
-                Scaffold(modifier =
-                Modifier
-                    .fillMaxSize()
-                    .safeDrawingPadding()
-                    .padding(horizontal = 25.dp),
-                    topBar = {
-                        WordyTonyTopAppBar(
-                            title = stringResource(R.string.title),
-                            modifier = Modifier.fillMaxWidth()
-                        )
+    NavHost(navController = navController, startDestination = MainScreen) {
+        composable<MainScreen> {
+            Scaffold(modifier = scaffoldModifier,
+                topBar = {
+                    WordyTonyTopAppBar(
+                        title = stringResource(R.string.title),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings icon", modifier = Modifier.fillMaxWidth())
                     }
-                ) { innerPadding ->
-                    HomeScreen(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(innerPadding),
-                        playClick = { navController.navigate(PlayScreen) },
-                        awardsClick = {}
-                    )
                 }
+            ) { innerPadding ->
+                HomeScreen(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    playClick = { navController.navigate(PlayScreen) },
+                    awardsClick = {}
+                )
             }
+        }
 
-            composable<PlayScreen> {
-                Scaffold(modifier =
-                Modifier
-                    .fillMaxSize()
-                    .safeDrawingPadding()
-                    .padding(horizontal = 25.dp),
-                    topBar = {
-                        WordyTonyTopAppBar(
-                            title = "WORD FINDER",
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-                ) { innerPadding ->
-                    Text("To be implemented...", modifier = Modifier.padding(innerPadding))
+        composable<PlayScreen> {
+            Scaffold(modifier = scaffoldModifier,
+                topBar = {
+                    WordyTonyTopAppBar(
+                        title = "WORD FINDER",
+                        modifier = Modifier.fillMaxWidth()
+                    ) { } //TODO fix!!
                 }
+            ) { innerPadding ->
+                WordFinderScreen(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding))
             }
         }
     }
 }
 
 @Composable
-fun WordyTonyTopAppBar(modifier: Modifier = Modifier, title: String) {
+fun WordyTonyTopAppBar(modifier: Modifier = Modifier, title: String, rightItem: (@Composable () -> Unit)) {
     Row(horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Top, modifier = modifier) {
         Column {
             Text(text = title, style = MaterialTheme.typography.titleLarge)
@@ -113,8 +118,7 @@ fun WordyTonyTopAppBar(modifier: Modifier = Modifier, title: String) {
             shape = CircleShape,
             modifier = Modifier.width(70.dp).aspectRatio(1f).fillMaxWidth()
         ) {
-
-            Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings icon", modifier = Modifier.fillMaxWidth())
+            rightItem()
         }
     }
 }
