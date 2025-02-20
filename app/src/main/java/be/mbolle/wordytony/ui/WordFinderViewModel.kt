@@ -1,21 +1,45 @@
 package be.mbolle.wordytony.ui
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import be.mbolle.wordytony.data.words
+import be.mbolle.wordytony.model.Character
 
-class WordFinderViewModel(): ViewModel() {
-
-
-    private val usedWords: Set<String> = mutableSetOf()
+class WordFinderViewModel: ViewModel() {
     private val width: Int = 5
-    private val height = 8
+    private val height: Int = 8
+
     var terrain: Array<Array<Char>> = Array(width) { Array(height) { ' ' } }
         private set
 
+    val chosenCharacters = emptySet<Character>()
+    var correctCharacters = emptySet<Character>()
+
+    var uiState by mutableStateOf(WordFinderState(
+        characters = Array(width) { Array(height) { Character(' ')} },
+        randomWord = words.random()
+    ))
+        private set
 
     init {
         initSearchableWord(width, height)
+    }
+
+    fun getRandomWord(): String {
+        return ""
+    }
+
+    fun chooseIndexInBoard(chosenWord: String, variableIndex: Int): Int {
+        var validEndIndexes: Array<Int> = (0..variableIndex).toList().toTypedArray()
+
+        validEndIndexes = validEndIndexes.filter { index ->
+            index + (chosenWord.length - 1) > variableIndex
+        }.toTypedArray()
+
+        return validEndIndexes.random()
     }
 
     /**
@@ -25,7 +49,7 @@ class WordFinderViewModel(): ViewModel() {
     fun initSearchableWord(width: Int, height: Int) {
         val chosenWord = words.random()
         Log.d("WordFinderViewModel", "The chosen word $chosenWord")
-        //val directionOfWord = getDirectionFromWord(chosenWord, width, height)
+
         val directionOfWord = Direction.WIDTH
         Log.d("WordFinderViewModel", directionOfWord.name)
 
@@ -39,13 +63,14 @@ class WordFinderViewModel(): ViewModel() {
                 var validEndIndexes: Array<Int> = (0..widthIndex).toList().toTypedArray()
 
                 validEndIndexes = validEndIndexes.filter { index ->
-                    index + (chosenWord.length - 1) > widthIndex
+                    index + 1 >= chosenWord.length
                 }.toTypedArray()
-
+                Log.d("x", validEndIndexes.toList().toString())
                 val validEndIndex = validEndIndexes.random()
 
                 val widthIndexes = validIndexesOfWord(chosenWord, validEndIndex)
 
+                Log.d("x", widthIndexes.toList().toString())
                 val constantHeight = (0..heightIndex).random()
 
                 widthIndexes.forEachIndexed { index, element ->
@@ -73,12 +98,12 @@ class WordFinderViewModel(): ViewModel() {
     }
 
     private fun validIndexesOfWord(word: String, endIndex: Int): Array<Int> {
-        var endIndex = endIndex
+        var x = endIndex
         val output: Array<Int> = IntArray(word.length).toTypedArray()
 
         word.forEachIndexed { index, element ->
-            output[index] = endIndex
-            endIndex--
+            output[index] = x
+            x--
         }
 
         return output.reversedArray()
