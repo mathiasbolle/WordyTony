@@ -1,5 +1,6 @@
 package be.mbolle.wordytony.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import be.mbolle.wordytony.data.words
 
@@ -23,7 +24,10 @@ class WordFinderViewModel(): ViewModel() {
      */
     fun initSearchableWord(width: Int, height: Int) {
         val chosenWord = words.random()
-        val directionOfWord = getDirectionFromWord(chosenWord, width, height)
+        Log.d("WordFinderViewModel", "The chosen word $chosenWord")
+        //val directionOfWord = getDirectionFromWord(chosenWord, width, height)
+        val directionOfWord = Direction.WIDTH
+        Log.d("WordFinderViewModel", directionOfWord.name)
 
         val widthIndex = width - 1
         val heightIndex = height - 1
@@ -32,7 +36,7 @@ class WordFinderViewModel(): ViewModel() {
 
             Direction.WIDTH -> {
                 // generate a random value between 0 (index) and (width-1) where 0+length of word
-                var validEndIndexes: Array<Int> = IntArray(width) { it + 1 }.toTypedArray()
+                var validEndIndexes: Array<Int> = (0..widthIndex).toList().toTypedArray()
 
                 validEndIndexes = validEndIndexes.filter { index ->
                     index + (chosenWord.length - 1) > widthIndex
@@ -47,6 +51,8 @@ class WordFinderViewModel(): ViewModel() {
                 widthIndexes.forEachIndexed { index, element ->
                     terrain[element][constantHeight] = chosenWord[index]
                 }
+
+                Log.d("WordfinderViewModel", terrain.toString())
 
                 terrain = fillUpEmptySpots(terrain)
             }
@@ -67,13 +73,15 @@ class WordFinderViewModel(): ViewModel() {
     }
 
     private fun validIndexesOfWord(word: String, endIndex: Int): Array<Int> {
-        var theIndex: Int
-        val indexes : Array<Int> = word.map {
-            theIndex = endIndex - 1
-            return@map theIndex + 1
-        }.toTypedArray()
+        var endIndex = endIndex
+        val output: Array<Int> = IntArray(word.length).toTypedArray()
 
-        return indexes
+        word.forEachIndexed { index, element ->
+            output[index] = endIndex
+            endIndex--
+        }
+
+        return output.reversedArray()
     }
 
     fun fillUpEmptySpots(terrain: Array<Array<Char>>): Array<Array<Char>> {

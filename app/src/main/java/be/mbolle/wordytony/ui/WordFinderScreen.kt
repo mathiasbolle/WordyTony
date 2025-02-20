@@ -1,5 +1,6 @@
 package be.mbolle.wordytony.ui
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
@@ -20,6 +22,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import be.mbolle.wordytony.model.Character
 
 @Composable
 fun WordFinderScreen(modifier: Modifier = Modifier,
@@ -28,19 +31,32 @@ fun WordFinderScreen(modifier: Modifier = Modifier,
     val width = 5
     val height = 8
 
+    Log.d("WordFinderScreen", viewModel.terrain.toString())
+
+    Column(verticalArrangement = Arrangement.Bottom, modifier = Modifier.fillMaxHeight()) {
+        WordGrid(width = width, height = height, characters = viewModel.terrain) { widthIndex, heightIndex ->
+            Log.d("WordFinderScreen", "hehe")
+        }
+    }
 
 
-    Column(modifier = modifier, verticalArrangement = Arrangement.Center) {
-        repeat(width) { widthIndex ->
-            if (widthIndex == width) {
-                PlayBoardRow(
-                    height = height,
-                    defaultPadding = defaultPadding) {
-                }
-            } else {
-                PlayBoardRow(modifier = Modifier.padding(bottom = defaultPadding),
-                    height = height,
-                    defaultPadding = defaultPadding) {
+}
+
+@Composable
+fun WordGrid(modifier: Modifier = Modifier,
+             width: Int,
+             height: Int,
+             characters: Array<Array<Char>>, //replace Char to Character
+             registerCharacter: (widthIndex: Int, heightIndex: Int) -> Unit) {
+
+    Column {
+        repeat(height) { heightIndex ->
+            Row {
+                repeat(width) { widthIndex ->
+                    Box(modifier = Modifier.weight(1f).aspectRatio(1f).clickable {
+                        registerCharacter(widthIndex, heightIndex) }, contentAlignment = Alignment.Center) {
+                        Text("${characters[widthIndex][heightIndex]}") // characters width height
+                    }
                 }
             }
         }
@@ -48,39 +64,13 @@ fun WordFinderScreen(modifier: Modifier = Modifier,
 }
 
 @Composable
-fun PlayBoardRow(modifier: Modifier = Modifier,
-                 height: Int,
-                 defaultPadding: Dp,
-                 onClick: (letter: String) -> Unit) {
-    Row(modifier = modifier) {
-        repeat(times = height) { heightIndex ->
-            LetterItem(modifier = Modifier.weight(1f), onClick = {e -> onClick(e)})
-            Spacer(modifier = Modifier.width(defaultPadding))
+@Preview(showBackground = true)
+fun WordGridPreview() {
+    val width = 5
+    val height = 8
+    val viewModel: WordFinderViewModel = viewModel()
 
-            if (heightIndex == height) {
-                LetterItem(modifier = Modifier.weight(1f), onClick = { e -> onClick(e) })
-                Spacer(modifier = Modifier.width(defaultPadding))
-            } else {
-                LetterItem(modifier = Modifier.weight(1f), onClick = {e -> onClick(e)})
-            }
-        }
+    WordGrid(width = width, height = height, characters = viewModel.terrain) { widthIndex, heightIndex ->
+        Log.d("WordFinderScreen", "hehe")
     }
-}
-
-@Composable
-fun LetterItem(letter: String = "E",
-               onClick: (letter: String) -> Unit,
-               modifier: Modifier = Modifier) {
-    Box(modifier = modifier.clickable { onClick(letter) }) {
-        Box(contentAlignment = Alignment.Center, modifier = Modifier
-            .background(Color(0XFFD9D9D9)).aspectRatio(1f)) {
-            Text(text = letter, fontSize = 20.sp)
-        }
-    }
-}
-
-@Preview(showSystemUi = true)
-@Composable
-fun PreviewWordFinder() {
-    WordFinderScreen()
 }
