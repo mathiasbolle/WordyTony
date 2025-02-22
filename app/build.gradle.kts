@@ -52,6 +52,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.compose.navigation)
     implementation(libs.lifecycle.viewmodel.compose)
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
     implementation(libs.kotlinx.serializable)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

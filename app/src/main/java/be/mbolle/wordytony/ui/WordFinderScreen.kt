@@ -16,13 +16,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import be.mbolle.wordytony.model.Character
 
 @Composable
 fun WordFinderScreen(
     modifier: Modifier = Modifier,
-    viewModel: WordFinderViewModel = viewModel()
+    viewModel: WordFinderViewModel = viewModel(),
+    onFinishGame: @Composable () -> Unit
 ) {
     val defaultPadding = 15.dp
     val width = 5
@@ -31,6 +33,12 @@ fun WordFinderScreen(
     Log.d("WordFinderScreen", viewModel.uiState.toString())
 
     Column(verticalArrangement = Arrangement.Bottom, modifier = Modifier.fillMaxHeight()) {
+        if (viewModel.uiState.foundWord) {
+            Text(text = "${viewModel.uiState.randomWord} Found 🎉!!", color = Color(0XFF4DE5BF),
+                fontSize = 25.sp)
+            onFinishGame()
+
+        }
         WordGrid(
             width = width,
             height = height,

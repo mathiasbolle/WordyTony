@@ -21,6 +21,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -37,6 +39,8 @@ import be.mbolle.wordytony.ui.WordyTonyButton
 import be.mbolle.wordytony.ui.navigation.MainScreen
 import be.mbolle.wordytony.ui.navigation.PlayScreen
 import be.mbolle.wordytony.ui.theme.WordyTonyTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,7 +78,14 @@ fun NavigationHandler(navController: NavHostController) {
                         title = stringResource(R.string.title),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings icon", modifier = Modifier.fillMaxWidth())
+                        WordyTonyButton(
+                            onClick = {},
+                            offset = Offset(4.dp, 4.dp),
+                            shape = CircleShape,
+                            modifier = Modifier.width(70.dp).aspectRatio(1f).fillMaxWidth()
+                        ) {
+                            Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings icon", modifier = Modifier.fillMaxWidth())
+                        }
                     }
                 }
             ) { innerPadding ->
@@ -99,7 +110,19 @@ fun NavigationHandler(navController: NavHostController) {
             ) { innerPadding ->
                 WordFinderScreen(modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding))
+                    .padding(innerPadding),
+                    onFinishGame =  {
+                        val scope = rememberCoroutineScope()
+                        LaunchedEffect(key1 = null) {
+                            scope.launch {
+                                launch {
+                                    delay(1000)
+                                    navController.navigate(MainScreen)
+                                }
+                            }
+                        }
+                    }
+                )
             }
         }
     }
@@ -112,13 +135,6 @@ fun WordyTonyTopAppBar(modifier: Modifier = Modifier, title: String, rightItem: 
             Text(text = title, style = MaterialTheme.typography.titleLarge)
             Text(stringResource(R.string.subtitle), style = MaterialTheme.typography.titleMedium)
         }
-        WordyTonyButton(
-            onClick = {},
-            offset = Offset(4.dp, 4.dp),
-            shape = CircleShape,
-            modifier = Modifier.width(70.dp).aspectRatio(1f).fillMaxWidth()
-        ) {
-            rightItem()
-        }
+        rightItem()
     }
 }

@@ -5,8 +5,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import be.mbolle.wordytony.data.words
 import be.mbolle.wordytony.model.Character
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
 
 class WordFinderViewModel : ViewModel() {
     private val width: Int = 5
@@ -50,15 +54,30 @@ class WordFinderViewModel : ViewModel() {
         //if it is correct to correctCharacters give toast message or smth?
 
         Log.d("WordFinderViewModel", correctCharacters.toString())
-        Log.d("WordfinderViewModel", uiState.characters.flatten().filter { it.selected }.toString())
+        Log.d("WordfinderViewModel", uiState.characters.flatten().filter { it.selected }
+            .toString())
 
 
-        Log.d("WordFinderViewModel", uiState.characters
+        Log.d("WordFinderViewModel", (uiState.characters
             .flatten()
             .filter { it.selected }
-            .toSet().equals(correctCharacters).toString())
+            .toSet() == correctCharacters).toString())
+
+
+
+        if (uiState.characters.flatten().filter { it.selected }.toSet() == correctCharacters) {
+            foundWord()
+        }
     }
 
+    fun foundWord() {
+        uiState = uiState.copy(
+            characters = uiState.characters,
+            randomWord = uiState.randomWord,
+            foundWord = true
+        )
+
+    }
 
     //situation where variableIndex is equals to 1 so the filter will produce a
     fun chooseEndIndexInBoard(chosenWord: String, variableIndex: Int): Int {
