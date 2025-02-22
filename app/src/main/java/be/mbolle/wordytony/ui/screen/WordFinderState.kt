@@ -1,4 +1,4 @@
-package be.mbolle.wordytony.ui
+package be.mbolle.wordytony.ui.screen
 
 import be.mbolle.wordytony.model.Character
 

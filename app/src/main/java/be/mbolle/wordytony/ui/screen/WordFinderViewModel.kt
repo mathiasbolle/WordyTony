@@ -1,16 +1,12 @@
-package be.mbolle.wordytony.ui
+package be.mbolle.wordytony.ui.screen
 
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import be.mbolle.wordytony.data.words
 import be.mbolle.wordytony.model.Character
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.joinAll
-import kotlinx.coroutines.launch
 
 class WordFinderViewModel : ViewModel() {
     private val width: Int = 5
@@ -40,8 +36,8 @@ class WordFinderViewModel : ViewModel() {
             Character(
                 mutableCharacters.get(wIndex).get(hIndex).content,
                 !mutableCharacters.get(wIndex).get(hIndex).selected,
-                width = mutableCharacters.get(wIndex).get(hIndex).width,
-                height = mutableCharacters.get(wIndex).get(hIndex).height
+                width = mutableCharacters[wIndex][hIndex].width,
+                height = mutableCharacters[wIndex][hIndex].height
             )
 
         uiState = uiState.copy(
@@ -188,7 +184,7 @@ class WordFinderViewModel : ViewModel() {
         } else {
             widthIndexes.forEachIndexed { index, element ->
                 uiState.characters[constantHeight][element] =
-                    Character(word[index], width = constantHeight, height = element)
+                    Character(word[index], width = element, height = constantHeight)
                 correctCharacters.add(
                     Character(
                         word[index],

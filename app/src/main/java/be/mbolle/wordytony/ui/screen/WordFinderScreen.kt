@@ -1,4 +1,4 @@
-package be.mbolle.wordytony.ui
+package be.mbolle.wordytony.ui.screen
 
 import android.util.Log
 import androidx.compose.foundation.background
@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,7 +27,6 @@ fun WordFinderScreen(
     viewModel: WordFinderViewModel = viewModel(),
     onFinishGame: @Composable () -> Unit
 ) {
-    val defaultPadding = 15.dp
     val width = 5
     val height = 8
 
@@ -54,24 +54,27 @@ fun WordGrid(
     modifier: Modifier = Modifier,
     width: Int,
     height: Int,
-
     characters: Array<Array<Character>>, //replace Char to Character
     registerCharacter: (widthIndex: Int, heightIndex: Int) -> Unit
 ) {
 
-    Column {
+    Column(modifier = modifier) {
         repeat(height) { heightIndex ->
-            Row {
+            val bottomPadding = if (heightIndex+1 == height) 0.dp else 5.dp
+            Row(modifier = Modifier.padding(bottom = bottomPadding)) {
                 repeat(width) { widthIndex ->
+                    val rightPadding = if (widthIndex+1 == width) 0.dp else 5.dp
 
-                    var defaultColor = Color.Gray
+
+                    var defaultColor = Color(0XFFD9D9D9)
                     if (characters[widthIndex][heightIndex].selected) {
-                        defaultColor = Color.Green
+                        defaultColor = Color(0XFF4DE5BF)
                     }
                     Box(
                         modifier = Modifier
                             .weight(1f)
                             .aspectRatio(1f)
+                            .padding(end = rightPadding)
                             .background(defaultColor)
                             .clickable {
                                 registerCharacter(widthIndex, heightIndex)
@@ -79,7 +82,7 @@ fun WordGrid(
                     ) {
 
 
-                        Text("${characters[widthIndex][heightIndex]}") // characters width height
+                        Text("${characters[widthIndex][heightIndex].content}") // characters width height
                     }
                 }
             }

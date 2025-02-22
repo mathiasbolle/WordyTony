@@ -1,4 +1,4 @@
-package be.mbolle.wordytony.ui
+package be.mbolle.wordytony.ui.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -38,7 +38,8 @@ fun HomeScreen(modifier: Modifier = Modifier, playClick: () -> Unit, awardsClick
         }
         WordyTonyButton(
             modifier = Modifier.fillMaxWidth(), offset = defaultActionButtonOffset,
-            onClick = awardsClick
+            onClick = awardsClick,
+            enabled = false,
         ) {
             Text(stringResource(R.string.awards_btn))
         }
@@ -63,7 +64,6 @@ fun WordyTonyButton(
                 .matchParentSize()
                 .offset(x = offset.x, y = offset.y)
                 .background(Color(0XFF3D887A), shape = shape)
-                .then(modifier)
         )
 
         Button(

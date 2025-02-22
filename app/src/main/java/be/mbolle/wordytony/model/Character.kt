@@ -10,7 +10,7 @@ data class Character(
     val height: Int?
 ) {
     override fun toString(): String {
-        return this.content.toString()
+        return "${this.content} ${this.width} ${this.height}"
     }
 
     override fun equals(other: Any?): Boolean {
