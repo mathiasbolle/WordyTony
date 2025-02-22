@@ -20,8 +20,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import be.mbolle.wordytony.model.Character
 
 @Composable
-fun WordFinderScreen(modifier: Modifier = Modifier,
-                     viewModel: WordFinderViewModel = viewModel()) {
+fun WordFinderScreen(
+    modifier: Modifier = Modifier,
+    viewModel: WordFinderViewModel = viewModel()
+) {
     val defaultPadding = 15.dp
     val width = 5
     val height = 8
@@ -29,31 +31,44 @@ fun WordFinderScreen(modifier: Modifier = Modifier,
     Log.d("WordFinderScreen", viewModel.uiState.toString())
 
     Column(verticalArrangement = Arrangement.Bottom, modifier = Modifier.fillMaxHeight()) {
-        WordGrid(width = width, height = height, characters = viewModel.uiState.characters) { widthIndex, heightIndex ->
+        WordGrid(
+            width = width,
+            height = height,
+            characters = viewModel.uiState.characters
+        ) { widthIndex, heightIndex ->
             viewModel.registerKey(widthIndex, heightIndex)
         }
     }
 }
 
 @Composable
-fun WordGrid(modifier: Modifier = Modifier,
-             width: Int,
-             height: Int,
+fun WordGrid(
+    modifier: Modifier = Modifier,
+    width: Int,
+    height: Int,
 
-             characters: Array<Array<Character>>, //replace Char to Character
-             registerCharacter: (widthIndex: Int, heightIndex: Int) -> Unit) {
+    characters: Array<Array<Character>>, //replace Char to Character
+    registerCharacter: (widthIndex: Int, heightIndex: Int) -> Unit
+) {
 
     Column {
         repeat(height) { heightIndex ->
             Row {
                 repeat(width) { widthIndex ->
 
-                    var defaultColor= Color.Gray
+                    var defaultColor = Color.Gray
                     if (characters[widthIndex][heightIndex].selected) {
                         defaultColor = Color.Green
                     }
-                    Box(modifier = Modifier.weight(1f).aspectRatio(1f).background(defaultColor).clickable {
-                        registerCharacter(widthIndex, heightIndex) }, contentAlignment = Alignment.Center) {
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .aspectRatio(1f)
+                            .background(defaultColor)
+                            .clickable {
+                                registerCharacter(widthIndex, heightIndex)
+                            }, contentAlignment = Alignment.Center
+                    ) {
 
 
                         Text("${characters[widthIndex][heightIndex]}") // characters width height
@@ -71,7 +86,11 @@ fun WordGridPreview() {
     val height = 8
     val viewModel: WordFinderViewModel = viewModel()
 
-    WordGrid(width = width, height = height, characters = viewModel.uiState.characters) { widthIndex, heightIndex ->
+    WordGrid(
+        width = width,
+        height = height,
+        characters = viewModel.uiState.characters
+    ) { widthIndex, heightIndex ->
         Log.d("WordFinderScreen", "hehe")
     }
 }

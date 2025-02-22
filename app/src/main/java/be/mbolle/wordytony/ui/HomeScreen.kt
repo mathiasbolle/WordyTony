@@ -30,12 +30,16 @@ fun HomeScreen(modifier: Modifier = Modifier, playClick: () -> Unit, awardsClick
     val defaultActionButtonOffset = Offset(x = 5.dp, y = 5.dp)
 
     Column(verticalArrangement = Arrangement.Bottom, modifier = modifier) {
-        WordyTonyButton(modifier = Modifier.fillMaxWidth(), offset = defaultActionButtonOffset,
-            onClick = playClick) {
+        WordyTonyButton(
+            modifier = Modifier.fillMaxWidth(), offset = defaultActionButtonOffset,
+            onClick = playClick
+        ) {
             Text(stringResource(R.string.play_btn))
         }
-        WordyTonyButton(modifier = Modifier.fillMaxWidth(), offset = defaultActionButtonOffset,
-            onClick = awardsClick) {
+        WordyTonyButton(
+            modifier = Modifier.fillMaxWidth(), offset = defaultActionButtonOffset,
+            onClick = awardsClick
+        ) {
             Text(stringResource(R.string.awards_btn))
         }
     }

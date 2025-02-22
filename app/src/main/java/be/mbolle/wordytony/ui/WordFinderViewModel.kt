@@ -8,34 +8,37 @@ import androidx.lifecycle.ViewModel
 import be.mbolle.wordytony.data.words
 import be.mbolle.wordytony.model.Character
 
-class WordFinderViewModel: ViewModel() {
+class WordFinderViewModel : ViewModel() {
     private val width: Int = 5
     private val height: Int = 8
+    var correctCharacters = mutableSetOf<Character>()
 
-    var terrain: Array<Array<Char>> = Array(width) { Array(height) { ' ' } }
-        private set
-
-    val chosenCharacters = emptySet<Character>()
-    var correctCharacters = emptySet<Character>()
-
-    var uiState by mutableStateOf(WordFinderState(
-        characters = Array(width) { Array(height) { Character(' ')} },
-        randomWord = words.random()
-    ))
+    var uiState by mutableStateOf(
+        WordFinderState(
+            characters = Array(width) {
+                Array(height) {
+                    Character(' ', width = null, height = null)
+                }
+            },
+            randomWord = words.random()
+        )
+    )
         private set
 
     init {
         initSearchableWord(width, height)
     }
 
-
     fun registerKey(wIndex: Int, hIndex: Int) {
         //query the character
         val mutableCharacters = uiState.characters.toMutableList()
         mutableCharacters[wIndex][hIndex] =
-            Character(mutableCharacters.get(wIndex).get(hIndex).content, true)
-
-
+            Character(
+                mutableCharacters.get(wIndex).get(hIndex).content,
+                !mutableCharacters.get(wIndex).get(hIndex).selected,
+                width = mutableCharacters.get(wIndex).get(hIndex).width,
+                height = mutableCharacters.get(wIndex).get(hIndex).height
+            )
 
         uiState = uiState.copy(
             characters = mutableCharacters.toTypedArray(),
@@ -46,9 +49,18 @@ class WordFinderViewModel: ViewModel() {
         //add to chosenCharacter
         //if it is correct to correctCharacters give toast message or smth?
 
+        Log.d("WordFinderViewModel", correctCharacters.toString())
+        Log.d("WordfinderViewModel", uiState.characters.flatten().filter { it.selected }.toString())
+
+
+        Log.d("WordFinderViewModel", uiState.characters
+            .flatten()
+            .filter { it.selected }
+            .toSet().equals(correctCharacters).toString())
     }
 
 
+    //situation where variableIndex is equals to 1 so the filter will produce a
     fun chooseEndIndexInBoard(chosenWord: String, variableIndex: Int): Int {
         var validEndIndexes: Array<Int> = (0..variableIndex).toList().toTypedArray()
 
@@ -82,21 +94,25 @@ class WordFinderViewModel: ViewModel() {
 
                 if (randomDirection == Direction.WIDTH) {
                     placeWordInWidth(chosenWord, widthIndex, constantHeight, randomDirection)
+                    Log.d("WordFinderViewModel", "for the WIDTH direction, the constant height is $constantHeight")
                 } else {
-                    placeWordInHeight(chosenWord, heightIndex, constantWidth, randomDirection)
+                    placeWordInHeight(chosenWord, constantWidth, heightIndex, randomDirection)
+                    Log.d("WordFinderViewModel", "for the HEIGHT direction, the constant width is $constantWidth")
                 }
             }
 
             Direction.WIDTH -> {
                 val constantHeight = (0..heightIndex).random()
-                setWordOnGrid(chosenWord, widthIndex, constantHeight, directionOfWord)
+                placeWordInWidth(chosenWord, widthIndex, constantHeight, directionOfWord)
             }
 
             Direction.HEIGHT -> {
-                Log.d("x", "heh")
                 val constantWidth = (0..widthIndex).random()
-                setWordOnGrid(chosenWord, heightIndex, constantWidth, directionOfWord)
+                placeWordInHeight(chosenWord, constantWidth, heightIndex, directionOfWord)
+
+                Log.d("WordFinderViewModel", "for the HEIGHT direction, the constant height is $constantWidth")
             }
+
             Direction.INVALID -> {
                 // TODO handle some error state right here!
             }
@@ -105,20 +121,32 @@ class WordFinderViewModel: ViewModel() {
             characters = fillUpEmptySpots(uiState.characters),
             randomWord = uiState.randomWord
         )
-        //terrain = fillUpEmptySpots(terrain)
     }
 
-    fun placeWordInWidth(word: String, widthIndex: Int, heightIndex: Int, directionOfWord: Direction) {
-        val constantHeight = (0..heightIndex).random()
+    fun placeWordInWidth(
+        word: String,
+        widthIndex: Int,
+        constantHeight: Int,
+        directionOfWord: Direction
+    ) {
         setWordOnGrid(word, widthIndex, constantHeight, directionOfWord)
     }
 
-    fun placeWordInHeight(word: String, widthIndex: Int, heightIndex: Int, directionOfWord: Direction) {
-        val constantWidth = (0..widthIndex).random()
+    fun placeWordInHeight(
+        word: String,
+        constantWidth: Int,
+        heightIndex: Int,
+        directionOfWord: Direction
+    ) {
         setWordOnGrid(word, heightIndex, constantWidth, directionOfWord)
     }
 
-    private fun setWordOnGrid(word: String, variableIndex: Int, constantIndex: Int, direction: Direction) {
+    private fun setWordOnGrid(
+        word: String,
+        variableIndex: Int,
+        constantIndex: Int,
+        direction: Direction
+    ) {
         val endIndexOfWord = chooseEndIndexInBoard(word, variableIndex)
         val widthIndexes = indexesOf(word, endIndexOfWord)
 
@@ -126,12 +154,30 @@ class WordFinderViewModel: ViewModel() {
 
         if (direction == Direction.WIDTH) {
             widthIndexes.forEachIndexed { index, element ->
-                uiState.characters[element][constantHeight] = Character(word[index])
+                uiState.characters[element][constantHeight] =
+                    Character(word[index], width = element, height = constantHeight)
+                correctCharacters.add(
+                    Character(
+                        word[index],
+                        selected = true,
+                        width = element,
+                        height = constantHeight
+                    )
+                )
                 //terrain[element][constantHeight] = word[index]
             }
         } else {
             widthIndexes.forEachIndexed { index, element ->
-                uiState.characters[constantHeight][element] = Character(word[index])
+                uiState.characters[constantHeight][element] =
+                    Character(word[index], width = constantHeight, height = element)
+                correctCharacters.add(
+                    Character(
+                        word[index],
+                        selected = true,
+                        width = element,
+                        height = constantHeight
+                    )
+                )
                 //terrain[constantHeight][element] = word[index]
             }
         }
@@ -150,9 +196,13 @@ class WordFinderViewModel: ViewModel() {
     }
 
     fun fillUpEmptySpots(terrain: Array<Array<Character>>): Array<Array<Character>> {
-        return terrain.map {
-            element -> element.map {
-                nextElement -> if (nextElement.content == ' ') Character(('A'..'Z').random()) else nextElement
+        return terrain.map { element ->
+            element.map { nextElement ->
+                if (nextElement.content == ' ') Character(
+                    ('A'..'Z').random(),
+                    width = nextElement.width,
+                    height = nextElement.height
+                ) else nextElement
             }.toTypedArray()
         }.toTypedArray()
     }

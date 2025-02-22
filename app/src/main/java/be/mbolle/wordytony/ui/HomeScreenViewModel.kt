@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 
-class HomeScreenViewModel(): ViewModel() {
+class HomeScreenViewModel() : ViewModel() {
 
 
     var navigationState by mutableStateOf<NavigationEvents>(NavigationEvents.HomeScreen)
@@ -19,6 +19,6 @@ class HomeScreenViewModel(): ViewModel() {
 }
 
 sealed class NavigationEvents {
-    data object PlayScreen: NavigationEvents()
-    data object HomeScreen: NavigationEvents()
+    data object PlayScreen : NavigationEvents()
+    data object HomeScreen : NavigationEvents()
 }
