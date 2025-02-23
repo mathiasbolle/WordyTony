@@ -7,10 +7,16 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import be.mbolle.wordytony.data.words
 import be.mbolle.wordytony.model.Character
+import be.mbolle.wordytony.model.Level
 
-class WordFinderViewModel : ViewModel() {
-    private val width: Int = 5
-    private val height: Int = 8
+class WordFinderViewModel(level: Level) : ViewModel() {
+    private val multiplier = when (level) {
+        Level.Easy -> 1
+        Level.Medium -> 2
+        Level.Hard -> 3
+    }
+    val width: Int = 5 * multiplier
+    val height: Int = 8 * multiplier
     var correctCharacters = mutableSetOf<Character>()
 
     var uiState by mutableStateOf(

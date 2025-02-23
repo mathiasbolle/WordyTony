@@ -1,9 +1,6 @@
 package be.mbolle.wordytony.ui
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,28 +11,31 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import be.mbolle.wordytony.R
+import be.mbolle.wordytony.ui.common.Offset
+import be.mbolle.wordytony.ui.common.WordyTonyButton
+import be.mbolle.wordytony.ui.common.WordyTonyTopAppBar
 import be.mbolle.wordytony.ui.navigation.MainScreen
 import be.mbolle.wordytony.ui.navigation.PlayScreen
 import be.mbolle.wordytony.ui.screen.HomeScreen
-import be.mbolle.wordytony.ui.screen.Offset
+import be.mbolle.wordytony.ui.screen.HomeScreenViewModel
 import be.mbolle.wordytony.ui.screen.WordFinderScreen
-import be.mbolle.wordytony.ui.screen.WordyTonyButton
+import be.mbolle.wordytony.ui.screen.WordFinderViewModel
+import be.mbolle.wordytony.ui.screen.WordFinderViewModelFactory
 import be.mbolle.wordytony.ui.theme.WordyTonyTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -44,6 +44,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun App() {
     val navController = rememberNavController()
+
     WordyTonyTheme {
         NavigationHandler(navController)
     }
@@ -87,13 +88,20 @@ fun NavigationHandler(navController: NavHostController) {
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding),
-                    playClick = { navController.navigate(PlayScreen) },
-                    awardsClick = {}
+                    playMenuClick = { level ->
+                        navController.navigate(PlayScreen(level = level))
+                                    },
+                    awardsClick = {
+
+                    },
+                    viewModel = viewModel(HomeScreenViewModel::class)
                 )
             }
         }
 
         composable<PlayScreen> {
+            val args = it.toRoute<PlayScreen>()
+
             Scaffold(modifier = scaffoldModifier,
                 topBar = {
                     WordyTonyTopAppBar(
@@ -102,9 +110,15 @@ fun NavigationHandler(navController: NavHostController) {
                     )
                 }
             ) { innerPadding ->
-                WordFinderScreen(modifier = Modifier.fillMaxSize()
-                    .padding(innerPadding),
-                    onFinishGame =  {
+                WordFinderScreen(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    viewModel = viewModel(
+                        WordFinderViewModel::class,
+                        factory = WordFinderViewModelFactory(args.level)
+                    ),
+                    onFinishGame = {
                         val scope = rememberCoroutineScope()
                         LaunchedEffect(key1 = null) {
                             scope.launch {
@@ -114,21 +128,9 @@ fun NavigationHandler(navController: NavHostController) {
                                 }
                             }
                         }
-                    }
+                    },
                 )
             }
         }
-    }
-}
-
-
-@Composable
-fun WordyTonyTopAppBar(modifier: Modifier = Modifier, title: String, rightItem: (@Composable () -> Unit)? = null) {
-    Row(horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Top, modifier = modifier) {
-        Column {
-            Text(text = title, style = MaterialTheme.typography.titleLarge)
-            Text(stringResource(R.string.subtitle), style = MaterialTheme.typography.titleMedium)
-        }
-        rightItem?.let { it() }
     }
 }

@@ -24,20 +24,23 @@ import be.mbolle.wordytony.model.Character
 @Composable
 fun WordFinderScreen(
     modifier: Modifier = Modifier,
-    viewModel: WordFinderViewModel = viewModel(),
+    viewModel: WordFinderViewModel,
     onFinishGame: @Composable () -> Unit
 ) {
-    val width = 5
-    val height = 8
+
+
+    val width = viewModel.width
+    val height = viewModel.height
 
     Log.d("WordFinderScreen", viewModel.uiState.toString())
 
     Column(verticalArrangement = Arrangement.Bottom, modifier = Modifier.fillMaxHeight()) {
         if (viewModel.uiState.foundWord) {
-            Text(text = "${viewModel.uiState.randomWord} Found 🎉!!", color = Color(0XFF4DE5BF),
-                fontSize = 25.sp)
+            Text(
+                text = "${viewModel.uiState.randomWord} Found 🎉!!", color = Color(0XFF4DE5BF),
+                fontSize = 25.sp
+            )
             onFinishGame()
-
         }
         WordGrid(
             width = width,
@@ -60,10 +63,10 @@ fun WordGrid(
 
     Column(modifier = modifier) {
         repeat(height) { heightIndex ->
-            val bottomPadding = if (heightIndex+1 == height) 0.dp else 5.dp
+            val bottomPadding = if (heightIndex + 1 == height) 0.dp else 5.dp
             Row(modifier = Modifier.padding(bottom = bottomPadding)) {
                 repeat(width) { widthIndex ->
-                    val rightPadding = if (widthIndex+1 == width) 0.dp else 5.dp
+                    val rightPadding = if (widthIndex + 1 == width) 0.dp else 5.dp
 
 
                     var defaultColor = Color(0XFFD9D9D9)
@@ -80,8 +83,6 @@ fun WordGrid(
                                 registerCharacter(widthIndex, heightIndex)
                             }, contentAlignment = Alignment.Center
                     ) {
-
-
                         Text("${characters[widthIndex][heightIndex].content}") // characters width height
                     }
                 }
