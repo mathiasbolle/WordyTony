@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,6 +27,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import be.mbolle.wordytony.R
+import be.mbolle.wordytony.data.datastore.DatastoreUserPreferencesRepository
 import be.mbolle.wordytony.ui.common.Offset
 import be.mbolle.wordytony.ui.common.WordyTonyButton
 import be.mbolle.wordytony.ui.common.WordyTonyTopAppBar
@@ -33,6 +35,7 @@ import be.mbolle.wordytony.ui.navigation.MainScreen
 import be.mbolle.wordytony.ui.navigation.PlayScreen
 import be.mbolle.wordytony.ui.screen.HomeScreen
 import be.mbolle.wordytony.ui.screen.HomeScreenViewModel
+import be.mbolle.wordytony.ui.screen.HomeScreenViewModelFactory
 import be.mbolle.wordytony.ui.screen.WordFinderScreen
 import be.mbolle.wordytony.ui.screen.WordFinderViewModel
 import be.mbolle.wordytony.ui.screen.WordFinderViewModelFactory
@@ -56,6 +59,12 @@ fun NavigationHandler(navController: NavHostController) {
         .fillMaxSize()
         .safeDrawingPadding()
         .padding(horizontal = 25.dp)
+
+    val repo =
+        DatastoreUserPreferencesRepository(context = LocalContext.current)
+
+    val homescreenviewmodel = viewModel(HomeScreenViewModel::class,
+        factory = HomeScreenViewModelFactory(repository = repo))
 
     NavHost(navController = navController, startDestination = MainScreen) {
         composable<MainScreen> {
@@ -89,12 +98,13 @@ fun NavigationHandler(navController: NavHostController) {
                         .fillMaxSize()
                         .padding(innerPadding),
                     playMenuClick = { level ->
+                        
                         navController.navigate(PlayScreen(level = level))
                                     },
                     awardsClick = {
 
                     },
-                    viewModel = viewModel(HomeScreenViewModel::class)
+                    viewModel = homescreenviewmodel
                 )
             }
         }
@@ -116,8 +126,9 @@ fun NavigationHandler(navController: NavHostController) {
                         .padding(innerPadding),
                     viewModel = viewModel(
                         WordFinderViewModel::class,
-                        factory = WordFinderViewModelFactory(args.level)
-                    ),
+                        factory = WordFinderViewModelFactory(repository = repo,
+                            level = args.level
+                    )),
                     onFinishGame = {
                         val scope = rememberCoroutineScope()
                         LaunchedEffect(key1 = null) {

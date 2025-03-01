@@ -40,20 +40,25 @@ fun HomeScreen(
     val bottomSheetState = viewModel.showBottomSheet
     val defaultActionButtonOffset = Offset(x = 5.dp, y = 5.dp)
 
-    if (bottomSheetState) {
+    viewModel.restoreCache() // should this be the right place?
+
+    if (bottomSheetState && viewModel.level == null) {
         GameModeBottomSheet(modifier =
             Modifier.fillMaxWidth(),
 
             disable = {
                 viewModel.hideBottomSheet() },
-            onPlay = { playMenuClick(it) })
+            onPlay = {
+                playMenuClick(it)
+                viewModel.persistLevel(it)
+            })
     }
 
     Column(verticalArrangement = Arrangement.Bottom, modifier = modifier) {
         WordyTonyButton(
             modifier = Modifier.fillMaxWidth(), offset = defaultActionButtonOffset,
             onClick = {
-                viewModel.showBottomSheet()
+                playMenuClick(viewModel.level!!)
             }
         ) {
             Text(stringResource(R.string.play_btn))
@@ -99,6 +104,7 @@ fun GameModeBottomSheet(
 fun LevelButton(modifier: Modifier = Modifier, level: Level, onPlay: (level: Level) -> Unit) {
     WordyTonyButton(
         onClick = {
+
             onPlay(level)
         },
         offset = Offset(4.dp, 4.dp),

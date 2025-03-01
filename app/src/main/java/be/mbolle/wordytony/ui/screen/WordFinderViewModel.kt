@@ -5,16 +5,23 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import be.mbolle.wordytony.data.datastore.UserPreferencesRepository
 import be.mbolle.wordytony.data.words
 import be.mbolle.wordytony.model.Character
 import be.mbolle.wordytony.model.Level
+import kotlinx.coroutines.launch
 
-class WordFinderViewModel(level: Level) : ViewModel() {
+class WordFinderViewModel(private var level: Level?,
+                          val userPreferencesRepository: UserPreferencesRepository) : ViewModel() {
+
     private val multiplier = when (level) {
         Level.Easy -> 1
         Level.Medium -> 2
         Level.Hard -> 3
+        null -> -1
     }
+
     val width: Int = 5 * multiplier
     val height: Int = 8 * multiplier
     var correctCharacters = mutableSetOf<Character>()
@@ -32,7 +39,17 @@ class WordFinderViewModel(level: Level) : ViewModel() {
         private set
 
     init {
+        restoreLevelOfUserPreference()
         initSearchableWord(width, height)
+    }
+
+    fun restoreLevelOfUserPreference() {
+        viewModelScope.launch {
+            val cachedLevel = userPreferencesRepository.getLevel()
+            level = cachedLevel
+        }
+
+        Log.d("WordFinderViewModel", "the state that is written to the pb file is $level")
     }
 
     fun registerKey(wIndex: Int, hIndex: Int) {

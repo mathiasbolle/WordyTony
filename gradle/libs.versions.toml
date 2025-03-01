@@ -1,5 +1,6 @@
 [versions]
 agp = "8.8.0"
+datastore = "1.1.2"
 kotlin = "2.0.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
@@ -11,11 +12,14 @@ composeBom = "2024.04.01"
 composeNav = "2.8.7"
 lifecycleRuntimeKtxVersion = "2.4.0"
 lifecycleViewmodelCompose = "2.8.7"
+protobufJavalite = "3.18.0"
 serializable = "1.7.3"
 serializablePlugin = "2.0.21"
+googleProtobuf = "0.9.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "datastore" }
 androidx-lifecycle-runtime-ktx-v240 = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtxVersion" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -33,9 +37,12 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 androidx-compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref="composeNav"}
 kotlinx-serializable = {group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref="serializable"}
 lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
+protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobufJavalite" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-kotlin-serializable = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref= "serializablePlugin"}
+kotlin-serializable = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref= "serializablePlugin" }
+google-protobuf = { id = "com.google.protobuf", version.ref="googleProtobuf" }
+
