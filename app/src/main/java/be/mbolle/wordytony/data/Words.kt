@@ -1,5 +1,6 @@
 package be.mbolle.wordytony.data
 
-val words: Set<String> = setOf(
-    "EMELY"
-)
+val words: Set<String> =
+    setOf(
+        "EMELY",
+    )

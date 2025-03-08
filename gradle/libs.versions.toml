@@ -16,6 +16,7 @@ protobufJavalite = "3.18.0"
 serializable = "1.7.3"
 serializablePlugin = "2.0.21"
 googleProtobuf = "0.9.4"
+ktlint = "12.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -34,8 +35,8 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
-androidx-compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref="composeNav"}
-kotlinx-serializable = {group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref="serializable"}
+androidx-compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "composeNav" }
+kotlinx-serializable = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serializable" }
 lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobufJavalite" }
 
@@ -43,6 +44,7 @@ protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-kotlin-serializable = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref= "serializablePlugin" }
-google-protobuf = { id = "com.google.protobuf", version.ref="googleProtobuf" }
+kotlin-serializable = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serializablePlugin" }
+google-protobuf = { id = "com.google.protobuf", version.ref = "googleProtobuf" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 

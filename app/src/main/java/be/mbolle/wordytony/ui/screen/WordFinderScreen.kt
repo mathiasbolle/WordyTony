@@ -25,10 +25,8 @@ import be.mbolle.wordytony.model.Character
 fun WordFinderScreen(
     modifier: Modifier = Modifier,
     viewModel: WordFinderViewModel,
-    onFinishGame: @Composable () -> Unit
+    onFinishGame: @Composable () -> Unit,
 ) {
-
-
     val width = viewModel.width
     val height = viewModel.height
 
@@ -37,15 +35,16 @@ fun WordFinderScreen(
     Column(verticalArrangement = Arrangement.Bottom, modifier = Modifier.fillMaxHeight()) {
         if (viewModel.uiState.foundWord) {
             Text(
-                text = "${viewModel.uiState.randomWord} Found 🎉!!", color = Color(0XFF4DE5BF),
-                fontSize = 25.sp
+                text = "${viewModel.uiState.randomWord} Found 🎉!!",
+                color = Color(0XFF4DE5BF),
+                fontSize = 25.sp,
             )
             onFinishGame()
         }
         WordGrid(
             width = width,
             height = height,
-            characters = viewModel.uiState.characters
+            characters = viewModel.uiState.characters,
         ) { widthIndex, heightIndex ->
             viewModel.registerKey(widthIndex, heightIndex)
         }
@@ -57,10 +56,9 @@ fun WordGrid(
     modifier: Modifier = Modifier,
     width: Int,
     height: Int,
-    characters: Array<Array<Character>>, //replace Char to Character
-    registerCharacter: (widthIndex: Int, heightIndex: Int) -> Unit
+    characters: Array<Array<Character>>,
+    registerCharacter: (widthIndex: Int, heightIndex: Int) -> Unit,
 ) {
-
     Column(modifier = modifier) {
         repeat(height) { heightIndex ->
             val bottomPadding = if (heightIndex + 1 == height) 0.dp else 5.dp
@@ -68,20 +66,21 @@ fun WordGrid(
                 repeat(width) { widthIndex ->
                     val rightPadding = if (widthIndex + 1 == width) 0.dp else 5.dp
 
-
                     var defaultColor = Color(0XFFD9D9D9)
                     if (characters[widthIndex][heightIndex].selected) {
                         defaultColor = Color(0XFF4DE5BF)
                     }
                     Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .aspectRatio(1f)
-                            .padding(end = rightPadding)
-                            .background(defaultColor)
-                            .clickable {
-                                registerCharacter(widthIndex, heightIndex)
-                            }, contentAlignment = Alignment.Center
+                        modifier =
+                            Modifier
+                                .weight(1f)
+                                .aspectRatio(1f)
+                                .padding(end = rightPadding)
+                                .background(defaultColor)
+                                .clickable {
+                                    registerCharacter(widthIndex, heightIndex)
+                                },
+                        contentAlignment = Alignment.Center,
                     ) {
                         Text("${characters[widthIndex][heightIndex].content}") // characters width height
                     }
@@ -101,7 +100,7 @@ fun WordGridPreview() {
     WordGrid(
         width = width,
         height = height,
-        characters = viewModel.uiState.characters
+        characters = viewModel.uiState.characters,
     ) { widthIndex, heightIndex ->
         Log.d("WordFinderScreen", "hehe")
     }

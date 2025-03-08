@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serializable)
     alias(libs.plugins.google.protobuf)
+    alias(libs.plugins.ktlint)
 }
 
 android {
@@ -25,7 +26,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -82,4 +83,9 @@ protobuf {
             }
         }
     }
+}
+
+ktlint {
+    android = true
+    additionalEditorconfig = mapOf("ktlint_function_naming_ignore_when_annotated_with" to "Composable")
 }

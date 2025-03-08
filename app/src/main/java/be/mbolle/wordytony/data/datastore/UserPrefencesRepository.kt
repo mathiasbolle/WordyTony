@@ -14,21 +14,23 @@ import kotlinx.coroutines.flow.firstOrNull
 
 interface UserPreferencesRepository {
     suspend fun getLevel(): Level?
+
     suspend fun setLevel(level: Level)
 }
 
 class DatastoreUserPreferencesRepository(
-    private val context: Context): UserPreferencesRepository {
+    private val context: Context,
+) : UserPreferencesRepository {
+    private val Context.userPreferences: DataStore<UserPreferences> by dataStore(
+        fileName = "user_pref.pb",
+        serializer = UserPreferencesSerializer,
+    )
 
-        private val Context.userPreferences: DataStore<UserPreferences> by dataStore(
-            fileName = "user_pref.pb",
-            serializer = UserPreferencesSerializer
-        )
-
-    val userPreferencesFlow: Flow<UserPreferences> = context.userPreferences.data
+    val userPreferencesFlow: Flow<UserPreferences> =
+        context.userPreferences.data
             .catch { exception ->
                 if (exception is IOException) {
-                    //Log.e(TAG, "Error reading sort order preferences.", exception)
+                    // Log.e(TAG, "Error reading sort order preferences.", exception)
                     emit(UserPreferences.getDefaultInstance())
                 } else {
                     throw exception

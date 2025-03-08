@@ -27,27 +27,30 @@ fun WordyTonyButton(
     internalPadding: PaddingValues = ButtonDefaults.ContentPadding,
     shape: Shape = MaterialTheme.shapes.large,
     enabled: Boolean = true,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     Box(modifier = modifier.padding(vertical = 10.dp, horizontal = 5.dp)) {
         Box(
-            modifier = modifier
-                .matchParentSize()
-                .offset(x = offset.x, y = offset.y)
-                .background(Color(0XFF3D887A), shape = shape)
+            modifier =
+                modifier
+                    .matchParentSize()
+                    .offset(x = offset.x, y = offset.y)
+                    .background(Color(0XFF3D887A), shape = shape),
         )
 
         Button(
             onClick = { onClick() },
-            modifier = modifier
-                .height(IntrinsicSize.Min),
+            modifier =
+                modifier
+                    .height(IntrinsicSize.Min),
             shape = shape,
             enabled = enabled,
             contentPadding = internalPadding,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0XFF34B897),
-                disabledContainerColor = Color(0XFF7FD0BC)
-            )
+            colors =
+                ButtonDefaults.buttonColors(
+                    containerColor = Color(0XFF34B897),
+                    disabledContainerColor = Color(0XFF7FD0BC),
+                ),
         ) { // Breaks the Material UI guidelines <3
             content()
         }

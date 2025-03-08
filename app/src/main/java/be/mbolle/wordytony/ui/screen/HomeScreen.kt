@@ -36,7 +36,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     playMenuClick: (level: Level) -> Unit,
     awardsClick: () -> Unit,
-    viewModel: HomeScreenViewModel
+    viewModel: HomeScreenViewModel,
 ) {
     val bottomSheetState = viewModel.showBottomSheet
     val defaultActionButtonOffset = Offset(x = 5.dp, y = 5.dp)
@@ -44,22 +44,24 @@ fun HomeScreen(
     viewModel.restoreCache() // should this be the right place?
 
     if (bottomSheetState) {
-
-        GameModeBottomSheet(modifier =
-            Modifier.fillMaxWidth(),
-
+        GameModeBottomSheet(
+            modifier =
+                Modifier.fillMaxWidth(),
             disable = {
-                viewModel.hideBottomSheet() },
+                viewModel.hideBottomSheet()
+            },
             onPlay = {
                 playMenuClick(it)
                 viewModel.persistLevel(it)
                 viewModel.hideBottomSheet()
-            })
+            },
+        )
     }
 
     Column(verticalArrangement = Arrangement.Bottom, modifier = modifier) {
         WordyTonyButton(
-            modifier = Modifier.fillMaxWidth(), offset = defaultActionButtonOffset,
+            modifier = Modifier.fillMaxWidth(),
+            offset = defaultActionButtonOffset,
             onClick = {
                 if (viewModel.level == null) {
                     Log.d("HomeScreen", "level is null!!!")
@@ -68,12 +70,13 @@ fun HomeScreen(
                     viewModel.hideBottomSheet()
                     playMenuClick(viewModel.level!!)
                 }
-            }
+            },
         ) {
             Text(stringResource(R.string.play_btn))
         }
         WordyTonyButton(
-            modifier = Modifier.fillMaxWidth(), offset = defaultActionButtonOffset,
+            modifier = Modifier.fillMaxWidth(),
+            offset = defaultActionButtonOffset,
             onClick = awardsClick,
             enabled = false,
         ) {
@@ -95,72 +98,80 @@ fun WordyTonyButtonPreview() {
 @ExperimentalMaterial3Api
 @Composable
 fun GameModeBottomSheet(
-    modifier: Modifier = Modifier, disable: () -> Unit,
-    onPlay: (level: Level) -> Unit
+    modifier: Modifier = Modifier,
+    disable: () -> Unit,
+    onPlay: (level: Level) -> Unit,
 ) {
     ModalBottomSheet(onDismissRequest = { disable() }, modifier = modifier) {
-        Text(text = "LEVEL", style = MaterialTheme.typography.titleLarge, modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp),
-            textAlign = TextAlign.Center)
+        Text(
+            text = "LEVEL",
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp),
+            textAlign = TextAlign.Center,
+        )
         Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
-            LevelButton(level = Easy, onPlay = {level -> onPlay(level)})
-            LevelButton(level = Medium, onPlay = {level -> onPlay(level)})
-            LevelButton(level = Hard, onPlay = {level -> onPlay(level)})
+            LevelButton(level = Easy, onPlay = { level -> onPlay(level) })
+            LevelButton(level = Medium, onPlay = { level -> onPlay(level) })
+            LevelButton(level = Hard, onPlay = { level -> onPlay(level) })
         }
     }
 }
 
 @Composable
-fun LevelButton(modifier: Modifier = Modifier, level: Level, onPlay: (level: Level) -> Unit) {
+fun LevelButton(
+    modifier: Modifier = Modifier,
+    level: Level,
+    onPlay: (level: Level) -> Unit,
+) {
     WordyTonyButton(
         onClick = {
-
             onPlay(level)
         },
         offset = Offset(4.dp, 4.dp),
         internalPadding = PaddingValues(horizontal = 15.dp),
-        modifier = modifier
+        modifier = modifier,
     ) {
         when (level) {
             Easy -> {
                 Icon(
                     imageVector = Icons.Outlined.Star,
-                    contentDescription = "star"
+                    contentDescription = "star",
                 )
                 Icon(
                     imageVector = Icons.TwoTone.Star,
-                    contentDescription = "star"
+                    contentDescription = "star",
                 )
                 Icon(
                     imageVector = Icons.TwoTone.Star,
-                    contentDescription = "star"
+                    contentDescription = "star",
                 )
             }
             Medium -> {
                 Icon(
                     imageVector = Icons.Outlined.Star,
-                    contentDescription = "star"
+                    contentDescription = "star",
                 )
                 Icon(
                     imageVector = Icons.Outlined.Star,
-                    contentDescription = "star"
+                    contentDescription = "star",
                 )
                 Icon(
                     imageVector = Icons.TwoTone.Star,
-                    contentDescription = "star"
+                    contentDescription = "star",
                 )
             }
             Hard -> {
                 Icon(
                     imageVector = Icons.Outlined.Star,
-                    contentDescription = "star"
+                    contentDescription = "star",
                 )
                 Icon(
                     imageVector = Icons.Outlined.Star,
-                    contentDescription = "star"
+                    contentDescription = "star",
                 )
                 Icon(
                     imageVector = Icons.Outlined.Star,
-                    contentDescription = "star"
+                    contentDescription = "star",
                 )
             }
         }

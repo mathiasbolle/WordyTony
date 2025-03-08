@@ -55,24 +55,29 @@ fun App() {
 
 @Composable
 fun NavigationHandler(navController: NavHostController) {
-    val scaffoldModifier = Modifier
-        .fillMaxSize()
-        .safeDrawingPadding()
-        .padding(horizontal = 25.dp)
+    val scaffoldModifier =
+        Modifier
+            .fillMaxSize()
+            .safeDrawingPadding()
+            .padding(horizontal = 25.dp)
 
     val repo =
         DatastoreUserPreferencesRepository(context = LocalContext.current)
 
-    val homeScreenViewmodel = viewModel(HomeScreenViewModel::class,
-        factory = HomeScreenViewModelFactory(repository = repo))
+    val homeScreenViewmodel =
+        viewModel(
+            HomeScreenViewModel::class,
+            factory = HomeScreenViewModelFactory(repository = repo),
+        )
 
     NavHost(navController = navController, startDestination = MainScreen) {
         composable<MainScreen> {
-            Scaffold(modifier = scaffoldModifier,
+            Scaffold(
+                modifier = scaffoldModifier,
                 topBar = {
                     WordyTonyTopAppBar(
                         title = stringResource(R.string.title),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
                         WordyTonyButton(
                             onClick = {},
@@ -80,31 +85,33 @@ fun NavigationHandler(navController: NavHostController) {
                             offset = Offset(4.dp, 4.dp),
                             shape = CircleShape,
                             internalPadding = PaddingValues(0.dp),
-                            modifier = Modifier
-                                .width(70.dp)
-                                .aspectRatio(1f)
-                                .fillMaxWidth()
+                            modifier =
+                                Modifier
+                                    .width(70.dp)
+                                    .aspectRatio(1f)
+                                    .fillMaxWidth(),
                         ) {
-                            Icon(imageVector = Icons.Default.Settings,
+                            Icon(
+                                imageVector = Icons.Default.Settings,
                                 contentDescription = stringResource(R.string.img_settings),
-                                modifier = Modifier
+                                modifier = Modifier,
                             )
                         }
                     }
-                }
+                },
             ) { innerPadding ->
                 HomeScreen(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding),
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding),
                     playMenuClick = { level ->
-                        
-                        navController.navigate(PlayScreen(level = level))
-                                    },
-                    awardsClick = {
 
+                        navController.navigate(PlayScreen(level = level))
                     },
-                    viewModel = homeScreenViewmodel
+                    awardsClick = {
+                    },
+                    viewModel = homeScreenViewmodel,
                 )
             }
         }
@@ -112,23 +119,29 @@ fun NavigationHandler(navController: NavHostController) {
         composable<PlayScreen> {
             val args = it.toRoute<PlayScreen>()
 
-            Scaffold(modifier = scaffoldModifier,
+            Scaffold(
+                modifier = scaffoldModifier,
                 topBar = {
                     WordyTonyTopAppBar(
                         title = stringResource(R.string.minigame),
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     )
-                }
+                },
             ) { innerPadding ->
                 WordFinderScreen(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding),
-                    viewModel = viewModel(
-                        WordFinderViewModel::class,
-                        factory = WordFinderViewModelFactory(repository = repo,
-                            level = args.level
-                    )),
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding),
+                    viewModel =
+                        viewModel(
+                            WordFinderViewModel::class,
+                            factory =
+                                WordFinderViewModelFactory(
+                                    repository = repo,
+                                    level = args.level,
+                                ),
+                        ),
                     onFinishGame = {
                         val scope = rememberCoroutineScope()
                         LaunchedEffect(key1 = null) {

@@ -12,7 +12,11 @@ import androidx.compose.ui.res.stringResource
 import be.mbolle.wordytony.R
 
 @Composable
-fun WordyTonyTopAppBar(modifier: Modifier = Modifier, title: String, rightItem: (@Composable () -> Unit)? = null) {
+fun WordyTonyTopAppBar(
+    modifier: Modifier = Modifier,
+    title: String,
+    rightItem: (@Composable () -> Unit)? = null,
+) {
     Row(horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.Top, modifier = modifier) {
         Column {
             Text(text = title, style = MaterialTheme.typography.titleLarge)
