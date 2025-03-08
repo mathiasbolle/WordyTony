@@ -1,5 +1,6 @@
 package be.mbolle.wordytony.ui.screen
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -42,7 +43,8 @@ fun HomeScreen(
 
     viewModel.restoreCache() // should this be the right place?
 
-    if (bottomSheetState && viewModel.level == null) {
+    if (bottomSheetState) {
+
         GameModeBottomSheet(modifier =
             Modifier.fillMaxWidth(),
 
@@ -51,6 +53,7 @@ fun HomeScreen(
             onPlay = {
                 playMenuClick(it)
                 viewModel.persistLevel(it)
+                viewModel.hideBottomSheet()
             })
     }
 
@@ -58,7 +61,13 @@ fun HomeScreen(
         WordyTonyButton(
             modifier = Modifier.fillMaxWidth(), offset = defaultActionButtonOffset,
             onClick = {
-                playMenuClick(viewModel.level!!)
+                if (viewModel.level == null) {
+                    Log.d("HomeScreen", "level is null!!!")
+                    viewModel.showBottomSheet()
+                } else {
+                    viewModel.hideBottomSheet()
+                    playMenuClick(viewModel.level!!)
+                }
             }
         ) {
             Text(stringResource(R.string.play_btn))

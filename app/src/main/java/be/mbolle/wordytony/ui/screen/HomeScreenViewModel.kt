@@ -22,13 +22,14 @@ class HomeScreenViewModel(private val userPreferencesRepository: UserPreferences
             val cachedLevel = userPreferencesRepository.getLevel()
             Log.d("HomeScreenViewModel", "The cached level is $cachedLevel")
 
-            if (cachedLevel == null) {
-                showBottomSheet = true
-            } else {
-                showBottomSheet =  false
+            if (cachedLevel != null) {
                 level = cachedLevel
             }
         }
+    }
+
+    fun showBottomSheet() {
+        showBottomSheet = true
     }
 
     fun hideBottomSheet() {

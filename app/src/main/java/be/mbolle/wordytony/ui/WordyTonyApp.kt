@@ -63,7 +63,7 @@ fun NavigationHandler(navController: NavHostController) {
     val repo =
         DatastoreUserPreferencesRepository(context = LocalContext.current)
 
-    val homescreenviewmodel = viewModel(HomeScreenViewModel::class,
+    val homeScreenViewmodel = viewModel(HomeScreenViewModel::class,
         factory = HomeScreenViewModelFactory(repository = repo))
 
     NavHost(navController = navController, startDestination = MainScreen) {
@@ -104,7 +104,7 @@ fun NavigationHandler(navController: NavHostController) {
                     awardsClick = {
 
                     },
-                    viewModel = homescreenviewmodel
+                    viewModel = homeScreenViewmodel
                 )
             }
         }
