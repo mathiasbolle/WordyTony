@@ -8,47 +8,49 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import be.mbolle.wordytony.R
 
-
-private val pushPinsBold = FontFamily(
-    Font(R.font.pushpins_light),
-    Font(R.font.pushpins_bold)
-)
-
-private val pushPinsLight = FontFamily(
-    Font(R.font.pushpins_light)
-)
-
-// Set of Material typography styles to start with
-val Typography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    ),
-
-    titleLarge = TextStyle(
-        fontFamily = pushPinsBold,
-        fontWeight = FontWeight.ExtraBold,
-        fontSize = 30.sp,
-        letterSpacing = 0.sp,
-        lineHeight = 0.sp
-    ),
-
-    titleMedium = TextStyle(
-        fontFamily = pushPinsLight,
-        fontWeight = FontWeight.Normal,
-        fontSize = 17.sp,
-    ),
-
-    labelLarge = TextStyle(
-        fontFamily = pushPinsLight,
-        fontWeight = FontWeight.Normal,
-        fontSize = 25.sp,
-        letterSpacing = 0.sp
+private val pushPinsBold =
+    FontFamily(
+        Font(R.font.pushpins_light),
+        Font(R.font.pushpins_bold),
     )
 
+private val pushPinsLight =
+    FontFamily(
+        Font(R.font.pushpins_light),
+    )
+
+// Set of Material typography styles to start with
+val Typography =
+    Typography(
+        bodyLarge =
+            TextStyle(
+                fontFamily = FontFamily.Default,
+                fontWeight = FontWeight.Normal,
+                fontSize = 16.sp,
+                lineHeight = 24.sp,
+                letterSpacing = 0.5.sp,
+            ),
+        titleLarge =
+            TextStyle(
+                fontFamily = pushPinsBold,
+                fontWeight = FontWeight.ExtraBold,
+                fontSize = 30.sp,
+                letterSpacing = 0.sp,
+                lineHeight = 0.sp,
+            ),
+        titleMedium =
+            TextStyle(
+                fontFamily = pushPinsLight,
+                fontWeight = FontWeight.Normal,
+                fontSize = 17.sp,
+            ),
+        labelLarge =
+            TextStyle(
+                fontFamily = pushPinsLight,
+                fontWeight = FontWeight.Normal,
+                fontSize = 25.sp,
+                letterSpacing = 0.sp,
+            ),
     /* Other default text styles to override
 
 
@@ -67,5 +69,5 @@ val Typography = Typography(
         lineHeight = 16.sp,
         letterSpacing = 0.5.sp
     )
-    */
-)
+     */
+    )

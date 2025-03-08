@@ -7,7 +7,7 @@ data class Character(
     val content: Char,
     val selected: Boolean = false,
     val width: Int?,
-    val height: Int?
+    val height: Int?,
 ) {
     override fun toString(): String {
         return "${this.content} ${this.width} ${this.height}"

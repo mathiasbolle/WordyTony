@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option java_package = "be.mbolle.wordytony.data.datastore";
+option java_multiple_files = true;
+
+message UserPreferences {
+    Level level = 1;
+}
+
+enum Level {
+    INVALID = 0;
+    EASY = 1;
+    MEDIUM = 2;
+    HARD = 3;
+}
