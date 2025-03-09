@@ -8,8 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import be.mbolle.wordytony.data.datastore.UserPreferencesRepository
 import be.mbolle.wordytony.data.words
-import be.mbolle.wordytony.model.Character
 import be.mbolle.wordytony.model.Level
+import be.mbolle.wordytony.model.Tile
 import kotlinx.coroutines.launch
 
 class WordFinderViewModel(
@@ -26,14 +26,14 @@ class WordFinderViewModel(
 
     val width: Int = 5 * multiplier
     val height: Int = 8 * multiplier
-    var correctCharacters = mutableSetOf<Character>()
+    var correctTiles = mutableSetOf<Tile>()
 
     var uiState by mutableStateOf(
         WordFinderState(
-            characters =
+            tiles =
                 Array(width) {
                     Array(height) {
-                        Character(' ', width = null, height = null)
+                        Tile(' ', x = null, y = null)
                     }
                 },
             randomWord = words.random(),
@@ -60,42 +60,42 @@ class WordFinderViewModel(
         hIndex: Int,
     ) {
         // query the character
-        val mutableCharacters = uiState.characters.toMutableList()
+        val mutableCharacters = uiState.tiles.toMutableList()
         mutableCharacters[wIndex][hIndex] =
-            Character(
+            Tile(
                 mutableCharacters.get(wIndex).get(hIndex).content,
                 !mutableCharacters.get(wIndex).get(hIndex).selected,
-                width = mutableCharacters[wIndex][hIndex].width,
-                height = mutableCharacters[wIndex][hIndex].height,
+                x = mutableCharacters[wIndex][hIndex].x,
+                y = mutableCharacters[wIndex][hIndex].y,
             )
 
         uiState =
             uiState.copy(
-                characters = mutableCharacters.toTypedArray(),
+                tiles = mutableCharacters.toTypedArray(),
                 randomWord = uiState.randomWord,
             )
 
         // add to chosenCharacter
         // if it is correct to correctCharacters give toast message or smth?
 
-        Log.d("WordFinderViewModel", correctCharacters.toString())
+        Log.d("WordFinderViewModel", correctTiles.toString())
         Log.d(
             "WordfinderViewModel",
-            uiState.characters.flatten().filter { it.selected }
+            uiState.tiles.flatten().filter { it.selected }
                 .toString(),
         )
 
         Log.d(
             "WordFinderViewModel",
             (
-                uiState.characters
+                uiState.tiles
                     .flatten()
                     .filter { it.selected }
-                    .toSet() == correctCharacters
+                    .toSet() == correctTiles
             ).toString(),
         )
 
-        if (uiState.characters.flatten().filter { it.selected }.toSet() == correctCharacters) {
+        if (uiState.tiles.flatten().filter { it.selected }.toSet() == correctTiles) {
             foundWord()
         }
     }
@@ -103,7 +103,7 @@ class WordFinderViewModel(
     fun foundWord() {
         uiState =
             uiState.copy(
-                characters = uiState.characters,
+                tiles = uiState.tiles,
                 randomWord = uiState.randomWord,
                 foundWord = true,
             )
@@ -175,7 +175,7 @@ class WordFinderViewModel(
         }
         uiState =
             uiState.copy(
-                characters = fillUpEmptySpots(uiState.characters),
+                tiles = fillUpEmptySpots(uiState.tiles),
                 randomWord = uiState.randomWord,
             )
     }
@@ -211,28 +211,28 @@ class WordFinderViewModel(
 
         if (direction == Direction.WIDTH) {
             widthIndexes.forEachIndexed { index, element ->
-                uiState.characters[element][constantHeight] =
-                    Character(word[index], width = element, height = constantHeight)
-                correctCharacters.add(
-                    Character(
+                uiState.tiles[element][constantHeight] =
+                    Tile(word[index], x = element, y = constantHeight)
+                correctTiles.add(
+                    Tile(
                         word[index],
                         selected = true,
-                        width = element,
-                        height = constantHeight,
+                        x = element,
+                        y = constantHeight,
                     ),
                 )
                 // terrain[element][constantHeight] = word[index]
             }
         } else {
             widthIndexes.forEachIndexed { index, element ->
-                uiState.characters[constantHeight][element] =
-                    Character(word[index], width = element, height = constantHeight)
-                correctCharacters.add(
-                    Character(
+                uiState.tiles[constantHeight][element] =
+                    Tile(word[index], x = element, y = constantHeight)
+                correctTiles.add(
+                    Tile(
                         word[index],
                         selected = true,
-                        width = element,
-                        height = constantHeight,
+                        x = element,
+                        y = constantHeight,
                     ),
                 )
                 // terrain[constantHeight][element] = word[index]
@@ -255,14 +255,14 @@ class WordFinderViewModel(
         return output.reversedArray()
     }
 
-    fun fillUpEmptySpots(terrain: Array<Array<Character>>): Array<Array<Character>> {
+    fun fillUpEmptySpots(terrain: Array<Array<Tile>>): Array<Array<Tile>> {
         return terrain.map { element ->
             element.map { nextElement ->
                 if (nextElement.content == ' ') {
-                    Character(
+                    Tile(
                         ('A'..'Z').random(),
-                        width = nextElement.width,
-                        height = nextElement.height,
+                        x = nextElement.x,
+                        y = nextElement.y,
                     )
                 } else {
                     nextElement

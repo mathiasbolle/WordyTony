@@ -19,7 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import be.mbolle.wordytony.model.Character
+import be.mbolle.wordytony.model.Tile
 
 @Composable
 fun WordFinderScreen(
@@ -44,7 +44,7 @@ fun WordFinderScreen(
         WordGrid(
             width = width,
             height = height,
-            characters = viewModel.uiState.characters,
+            tiles = viewModel.uiState.tiles,
         ) { widthIndex, heightIndex ->
             viewModel.registerKey(widthIndex, heightIndex)
         }
@@ -56,7 +56,7 @@ fun WordGrid(
     modifier: Modifier = Modifier,
     width: Int,
     height: Int,
-    characters: Array<Array<Character>>,
+    tiles: Array<Array<Tile>>,
     registerCharacter: (widthIndex: Int, heightIndex: Int) -> Unit,
 ) {
     Column(modifier = modifier) {
@@ -67,7 +67,7 @@ fun WordGrid(
                     val rightPadding = if (widthIndex + 1 == width) 0.dp else 5.dp
 
                     var defaultColor = Color(0XFFD9D9D9)
-                    if (characters[widthIndex][heightIndex].selected) {
+                    if (tiles[widthIndex][heightIndex].selected) {
                         defaultColor = Color(0XFF4DE5BF)
                     }
                     Box(
@@ -82,7 +82,7 @@ fun WordGrid(
                                 },
                         contentAlignment = Alignment.Center,
                     ) {
-                        Text("${characters[widthIndex][heightIndex].content}") // characters width height
+                        Text("${tiles[widthIndex][heightIndex].content}") // characters width height
                     }
                 }
             }
@@ -100,7 +100,7 @@ fun WordGridPreview() {
     WordGrid(
         width = width,
         height = height,
-        characters = viewModel.uiState.characters,
+        tiles = viewModel.uiState.tiles,
     ) { widthIndex, heightIndex ->
         Log.d("WordFinderScreen", "hehe")
     }
