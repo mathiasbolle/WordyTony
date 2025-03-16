@@ -118,7 +118,7 @@ class WordFinderViewModel(
 
         validEndIndexes =
             validEndIndexes.filter { index ->
-                index + 1 >= chosenWord.length
+                index >= chosenWord.length - 1
             }.toTypedArray()
         Log.d("x", validEndIndexes.toList().toString())
 

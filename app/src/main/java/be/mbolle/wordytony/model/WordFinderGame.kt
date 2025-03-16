@@ -7,27 +7,22 @@ import be.mbolle.wordytony.data.words
  * Chose a random word from the [words] collection.
  */
 class WordFinderGame(level: Level) {
-    lateinit var chosenWord: String
+    private var usedWords: MutableSet<Tile> = mutableSetOf()
+    var grid: Grid
         private set
-    private var usedWords: MutableSet<String> = mutableSetOf()
-    private var grid: Grid
 
     init {
-        choseRandomWord()
-
-        grid = Grid(level = level, word = chosenWord)
+        grid = Grid(level = level)
     }
 
-    private fun choseRandomWord() {
-        var generatedWord = words.random()
-        while (usedWords.contains(generatedWord)) {
-            generatedWord = words.random()
-        }
-
-        chosenWord = generatedWord
-        usedWords.add(chosenWord)
-    }
-
+    /**
+     * the only action that a player can do.
+     */
     fun selectTile(tile: Tile) {
+        usedWords.add(tile)
+    }
+
+    fun hasWon(): Boolean {
+        return usedWords == grid.placedWord
     }
 }

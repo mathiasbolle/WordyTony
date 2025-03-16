@@ -1,16 +1,21 @@
 package be.mbolle.wordytony.model
 
-import android.util.Log
 import be.mbolle.wordytony.model.Level.Easy
 import be.mbolle.wordytony.model.Level.Hard
 import be.mbolle.wordytony.model.Level.Medium
 
-class Grid(level: Level, val word: String) {
-    private var width: Int = 5
-    private var height: Int = 8
+class Grid(level: Level) {
+    var width: Int = 5
+        private set
+    var height: Int = 8
+        private set
+    private var secretWord: SecretWord
 
-    private lateinit var tiles: Array<Array<Tile?>>
-    private var placedWord = mutableSetOf<Tile>()
+    // Maybe switch to anther data structure in the future?
+    var tiles: Array<Array<Tile?>>
+        private set
+    var placedWord = mutableSetOf<Tile>()
+        private set
 
     init {
         val multiplier =
@@ -21,118 +26,28 @@ class Grid(level: Level, val word: String) {
             }
         width *= multiplier
         height *= multiplier
-
-        addWordToGrid()
-        fillUpEmptyTiles()
-    }
-
-    private fun addWordToGrid() {
-        val wordDirection =
-            getDirectionOfWord(
-                word = word,
-                width = width,
-                height = height,
-            )
-
-        val widthIndex = width - 1
-        val heightIndex = height - 1
-
-        when (wordDirection) {
-            Direction.WIDTH_HEIGHT -> {
-                val constantHeight = (0..heightIndex).random()
-                val constantWidth = (0..widthIndex).random()
-                val randomDirection = setOf(Direction.WIDTH, Direction.HEIGHT).random()
-
-                if (randomDirection == Direction.WIDTH) {
-                    placeWord(widthIndex, constantHeight)
-                } else {
-                    placeWord(heightIndex, constantWidth)
+        tiles =
+            Array(width) {
+                Array(height) {
+                    Tile(' ', x = null, y = null)
                 }
             }
-
-            Direction.WIDTH -> {
-                val constantHeight = (0..heightIndex).random()
-                placeWord(widthIndex, constantHeight)
-            }
-
-            Direction.HEIGHT -> {
-                val constantWidth = (0..widthIndex).random()
-                placeWord(heightIndex, constantWidth)
-            }
-
-            Direction.INVALID -> {
-                // TODO handle some error state right here!
-            }
-        }
+        secretWord = SecretWord(width, height)
+        addWordToGrid()
+        fillUpEmptyTiles()
     }
 
     /**
      * Perhaps name this to "determineIndex" that returns
      */
-    private fun placeWord(
-        widthIndex: Int,
-        constantHeight: Int,
-    ) {
-        val endIndexOfWord = chooseEndIndexInBoard(widthIndex)
-        val widthIndexes = indexesOf(word, endIndexOfWord)
+    private fun addWordToGrid() {
+        val gridWord = secretWord.getPlaceInGrid()
 
-        widthIndexes.forEachIndexed { index, element ->
-            tiles[element][constantHeight] =
-                Tile(word[index], x = element, y = constantHeight)
-
-            placedWord.add(
-                Tile(
-                    word[index],
-                    selected = true,
-                    x = element,
-                    y = constantHeight,
-                ),
-            )
+        gridWord.forEach { tile ->
+            println(tile)
+            tiles[tile.x!! - 1][tile.y!! - 1] = tile
+            placedWord.add(tile)
         }
-    }
-
-    private fun chooseEndIndexInBoard(variableIndex: Int): Int {
-        var validEndIndexes: Array<Int> = (0..variableIndex).toList().toTypedArray()
-
-        validEndIndexes =
-            validEndIndexes.filter { index ->
-                index + 1 >= word.length
-            }.toTypedArray()
-        Log.d("x", validEndIndexes.toList().toString())
-
-        return validEndIndexes.random()
-    }
-
-    private fun indexesOf(
-        word: String,
-        endIndex: Int,
-    ): Array<Int> {
-        var x = endIndex
-        val output: Array<Int> = IntArray(word.length).toTypedArray()
-
-        word.forEachIndexed { index, element ->
-            output[index] = x
-            x--
-        }
-
-        return output.reversedArray()
-    }
-
-    private fun getDirectionOfWord(
-        word: String,
-        width: Int,
-        height: Int,
-    ): Direction {
-        if (word.length > width && word.length > height) {
-            return Direction.INVALID
-        }
-        if (word.length <= width) {
-            if (word.length <= height) {
-                return Direction.WIDTH_HEIGHT
-            }
-            return Direction.WIDTH
-        }
-        return Direction.HEIGHT
     }
 
     private fun fillUpEmptyTiles() {

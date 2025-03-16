@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.serializable)
     alias(libs.plugins.google.protobuf)
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.android.junit)
 }
 
 android {
@@ -58,6 +59,7 @@ dependencies {
     implementation(libs.protobuf.javalite)
     implementation(libs.kotlinx.serializable)
     testImplementation(libs.junit)
+    testImplementation(libs.junit.jupiter)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))

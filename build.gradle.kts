@@ -6,4 +6,5 @@ plugins {
     alias(libs.plugins.kotlin.serializable) apply false
     alias(libs.plugins.google.protobuf) apply false
     alias(libs.plugins.ktlint) apply false
+    alias(libs.plugins.android.junit) apply false
 }
